@@ -12,39 +12,30 @@ import java.util.List;
 public class TodosResource {
 
     @Inject
-    private TodoService todoService;
+    TodoService todoService;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public List<Todo> getAll() {
-        return todoService.getTodoList();
+    public List<Todo> list() {
+        return todoService.list();
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public List<Todo> add(Todo todo) {
         todoService.add(todo);
-        return todoService.getTodoList();
+        return list();
     }
 
     @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public List<Todo> remote(Todo todo) {
-        todoService.remove(todo);
-        return todoService.getTodoList();
-    }
-
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public List<Todo> remote(@PathParam("id") String id) {
+    @Path("{id}")
+    public List<Todo> delete(@PathParam("id") int id) {
         todoService.remove(id);
-        return todoService.getTodoList();
+        return list();
     }
 
+    @DELETE
+    public List<Todo> delete() {
+        todoService.removeAll();
+        return list();
+    }
 
 }

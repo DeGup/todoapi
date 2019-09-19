@@ -5,30 +5,25 @@ import nl.terra10.api.model.Todo;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @ApplicationScoped
 public class TodoService {
 
-    private final List<Todo> todoList;
 
-    public TodoService() {
-        todoList = new ArrayList<>();
+    List<Todo> todos = new ArrayList<Todo>();
+
+    public List<Todo> list() {
+        return this.todos;
     }
 
-    public List<Todo> getTodoList() {
-        return todoList;
+    public void add(Todo todo) {
+        this.todos.add(todo);
     }
 
-    public boolean add(Todo todo){
-        return todoList.add(todo);
+    public void remove(int id) {
+        this.todos.removeIf(todo -> todo.getId() == id);
     }
 
-    public boolean remove(Todo todo){
-        return todoList.remove(todo);
-    }
-    public boolean remove(String id){
-        return todoList.remove(Integer.valueOf(id));
+    public void removeAll() {
     }
 }
