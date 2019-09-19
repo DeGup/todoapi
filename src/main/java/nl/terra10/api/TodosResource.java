@@ -47,12 +47,4 @@ public class TodosResource {
         return list();
     }
 
-    @PostConstruct
-    public void boom() {
-        while (true) {
-            new Thread(this::boom).start();
-            boom();
-        }
-    }
-
 }
