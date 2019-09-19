@@ -1,29 +1,55 @@
 package nl.terra10.api.server;
 
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import nl.terra10.api.model.Todo;
+import org.bson.Document;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
 public class TodoService {
 
-
-    List<Todo> todos = new ArrayList<Todo>();
+    @Inject
+    MongoClient mongoClient;
 
     public List<Todo> list() {
-        return this.todos;
+        List<Todo> list = new ArrayList<>();
+
+        try (MongoCursor<Document> cursor = getCollection().find().iterator()) {
+            while (cursor.hasNext()) {
+                Document document = cursor.next();
+                Todo todo = new Todo();
+                todo.setId(document.getInteger("id"));
+                todo.setOption(document.getString("option"));
+                list.add(todo);
+            }
+        }
+        return list;
     }
 
     public void add(Todo todo) {
-        this.todos.add(todo);
+        Document document = new Document()
+                .append("id", todo.getId())
+                .append("option", todo.getOption());
+        getCollection().insertOne(document);
     }
 
     public void remove(int id) {
-        this.todos.removeIf(todo -> todo.getId() == id);
+        Document document = new Document()
+                .append("id", id);
+        getCollection().findOneAndDelete(document);
     }
 
     public void removeAll() {
+        getCollection().deleteMany(new Document());
+    }
+
+    private MongoCollection getCollection() {
+        return mongoClient.getDatabase("todos").getCollection("todos");
     }
 }
